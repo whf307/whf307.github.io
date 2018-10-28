@@ -8,14 +8,15 @@ sitemap:
     changefreq: weekly
 ---
 <header class="major">
-	<h1>Elements<br />
-	Reference</h1>
+	<h1>Tools & Scripts </h1>
 </header>
 
 <!-- Text stuff -->
-	<h2>Text</h2>
+	<h2>Bbedp</h2>
 	Reference</h1>
+	<p>
 	<a href="/download/bbedp"  download="bbedp">bbedp</a>
+   </p>
 	<p>This is <b>bold</b> and this is <strong>strong</strong>. This is <i>italic</i> and this is <em>emphasized</em>.
 	This is <sup>superscript</sup> text and this is <sub>subscript</sub> text.
 	This is <u>underlined</u> and this is code: <code>for (;;) { ... }</code>.
@@ -373,9 +374,21 @@ sitemap:
 	<hr />
 
 <!-- Box -->
-	<h2>Box</h2>
+	<h2>bbedp</h2>
+	<p>Readme</p>
 	<div class="box">
-		<p>In both layman and nerd-speak, this is a paragraph. This is a paragraph that goes inside a box! Whoa so crazy. This is the text that goes under the heading and the subtitle. Paragraphs vary in length but in school we're taught to make them at least 7 sentences or else we risk getting a C. Since the paragraph didn't have a thesis or a closing argument, it's probably a C grade paragraph.</p>
+		<p>This script is used for print and edit block offset of PostgreSQL page,and you can use it only on Linux,if you want to use it on other plat
+from like AIX,maybe you could edit it again youself,good luck!
+
+Just find the $PGDATA,oid of database and relfilenode into ./file and then u can use it now! 
+for $PGDATA  excute 'echo $PGDATA' or 'ps -ef | grep postgres' to find the data directory!!! 
+for oid of database,run 'select oid,datname from pg_database;' 
+for relfilenode ,run 'select relfilenode from pg_class where relname='table_name';
+and edit the ./file like '/oracle/soft/pg_data/base/13323/16422'
+and then ,run chmod 755 bbedp,and execute ./bbedp,the new world is here.
+
+If you have any problem when using it, please concat with me,I will do as more as I can. 
+</p>
 	</div>
 
 	<hr />
