@@ -33,7 +33,7 @@ postgres=#
 
 （前提是装了pageinspece 扩展）
 
-![image-20181102225907753](/var/folders/rs/ycl_gwmx6v3_nf84nhfvk7v00000gn/T/abnerworks.Typora/image-20181102225907753.png)
+![image-20181102225907753](/image/pg/image-20181102225907753.png)
 
 我们只看与本次实验相关的部分：
 
