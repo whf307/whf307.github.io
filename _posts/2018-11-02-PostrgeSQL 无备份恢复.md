@@ -1,5 +1,3 @@
-# PostrgeSQL 无备份恢复
-
 Pg的特殊恢复测试一例，在pg没有将dead tuple清理掉之前，只要数据还在，我们就可以通过修改t_xmax等信息来恢复tuple，本文仅是一次实验，恢复1条或者数条tuples，请勿在生产环境模拟本操作。
 
 ## 一、环境准备
@@ -35,7 +33,8 @@ postgres=#
 
 （前提是装了pageinspece 扩展）
 
-![image-20181102225907753](/var/folders/rs/ycl_gwmx6v3_nf84nhfvk7v00000gn/T/abnerworks.Typora/image-20181102225907753.png)
+
+![image-20181102225907753](https://github.com/whf307/whf307.github.io/images/pg/image-20181102225907753.png)
 
 我们只看与本次实验相关的部分：
 
