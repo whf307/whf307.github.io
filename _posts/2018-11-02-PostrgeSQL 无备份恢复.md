@@ -33,7 +33,8 @@ postgres=#
 
 （前提是装了pageinspece 扩展）
 
-![image-20181102225907753](/image/pg/image-20181102225907753.png)
+
+![image-20181102225907753](https://github.com/whf307/whf307.github.io/image/pg/image-20181102225907753.png)
 
 我们只看与本次实验相关的部分：
 
