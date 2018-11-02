@@ -1,5 +1,3 @@
-# PostgreSQL Page存储结构浅析
-
 ## 一、Page
 
 pg中的page和Oracle中的数据块是一个意思，都是数据库的块，操作系统（文件系统）块的整数倍个，默认是8K也就是两个操作系统块（4k的文件系统块大小）。这个大小在pg安装configure的时候通过--with-blocksize参数指定，单位是Kb。 
