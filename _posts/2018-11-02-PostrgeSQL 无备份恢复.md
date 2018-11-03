@@ -130,7 +130,7 @@ pageinspect再次查看
 
 ![p2](whf307.github.io/_posts/images/image-20181102225907753.png)
 ![](images/image-20181102160751729.png)
-![](_posts/images/image-20181102160751729.png)
+![](/images/image-20181102160751729.png)
 
 这里xmax从0变成了603，就是删除这个tuple的事务id
 
