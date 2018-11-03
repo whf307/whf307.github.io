@@ -34,7 +34,7 @@ postgres=#
 （前提是装了pageinspece 扩展）
 
 
-![p1](/images/image-20181102225907753.png){:height="95%" width="95%"}
+![p1](/images/image-20181102225907753.png){:height="100%" width="100%"}
 
 我们只看与本次实验相关的部分：
 
