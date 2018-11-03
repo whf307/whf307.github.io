@@ -2,7 +2,8 @@
 > This is Massively, a text-heavy, article-oriented design built around a huge background
 image.
 
-![test](https://github.com/whf307/whf307.github.io/tree/master/images/image-20181102225907753.png)
+![test](images/image-20181102225907753.png)
+
 ## How to Use This Theme
 Jekyll consumes themes in two flavors; gem-based or spread across multiple folders
 in the site source. This port is of the second type. Concretely, it means that you
