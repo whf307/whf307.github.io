@@ -130,6 +130,8 @@ pageinspect再次查看
 
 ![]({{"https://github.com/whf307/whf307.github.io/blob/master/_posts/images/image-20181102225907753.png" | absolute_url }})
 
+![]({{"https://github.com/whf307/whf307.github.io/blob/master/images/image-20181102225907753.png" | absolute_url }})
+
 这里xmax从0变成了603，就是删除这个tuple的事务id
 
 t_infomask2变成了8194，十六进制就是0x2002，较之前的2，增加了0x2000。表示tuple被更新或者删除了
