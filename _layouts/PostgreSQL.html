@@ -47,9 +47,6 @@
 									<h2><a href="{{ post.url | absolute_url }}">{{ post.title }}</a></h2>
 								</header>
 								<a href="{{ post.url | absolute_url }}" class="image fit"><img src="{{ post.image | absolute_url }}" alt="" /></a>
-								<!--
-								<p>{{ post.excerpt }}</p>
-                                -->
 								<ul class="actions">
 									<li><a href="{{ post.url | absolute_url }}" class="button">Read More</a></li>
 								</ul>
@@ -65,10 +62,28 @@
 						{% endfor %}
 					-->
 
-					var dataStr = '{ {% for cat in site.categories %}{% if cat[0] != site.categories.first[0] %},{% endif %}"{{ cat[0] }}":[{% for post in cat[1] %}{% if post != cat[1].first %},{% endif %}{"url":"{{post.url}}", "title":"{{post.title}}", "date":"{{post.date | date:"%d/%m/%Y"}}"}{% endfor %}]{% endfor %} }',
-    				data = JSON.parse(dataStr),
-    				curTag = $.query.get("pg"),
-    				archieves = data[curTag];
+					{* for post in site.categories.pg *}
+         			{% assign mod3 = forloop.index | modulo: 3 %}
+						<article>
+							<header>
+								<span class="date">{{ post.date | date_to_string }}</span>
+								<h2><a href="{{ post.url | absolute_url }}">{{ post.title }}</a></h2>
+							</header>
+							<a href="{{ post.url | absolute_url }}" class="image fit"><img src="{{ post.image | absolute_url }}" alt="" /></a>
+							<ul class="actions">
+								<li><a href="{{ post.url | absolute_url }}" class="button">Read More</a></li>
+							</ul>
+							</article>
+							{% if mod3 == 0 %}
+							<article>
+								<header>
+									<h2><a href="#">Sponsored</a></h2>
+								</header>
+
+							</article>
+							{% endif %}
+
+					{* endfor *}
 
 					</section>
 
