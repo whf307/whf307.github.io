@@ -2,7 +2,6 @@
 > This is Massively, a text-heavy, article-oriented design built around a huge background
 image.
 
-![test](images/image-20181102225907753.png)
 
 ## How to Use This Theme
 Jekyll consumes themes in two flavors; gem-based or spread across multiple folders
