@@ -34,7 +34,7 @@ postgres=#
 （前提是装了pageinspece 扩展）
 
 
-![p1](/images/image-20181102225907753.png)
+![p1](/images/image-20181102225907753.png width="50%" height="50%")
 
 我们只看与本次实验相关的部分：
 
@@ -128,7 +128,7 @@ postgres=# select * from tab1;
 
 pageinspect再次查看
 
-![]({{"/images/image-20181102160751729.png" | absolute_url }})
+![]({{"/images/image-20181102160751729.png" | absolute_url }}width="50%" height="50%")
 
 这里xmax从0变成了603，就是删除这个tuple的事务id
 
