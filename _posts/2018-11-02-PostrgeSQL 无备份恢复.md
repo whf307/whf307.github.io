@@ -130,9 +130,9 @@ pageinspect再次查看
 
 ![p2] (https://github.com/whf307/whf307.github.io/blob/master/_posts/images/image-20181102225907753.png)
 ![](images/image-20181102160751729.png)
-![]({{"/images/image-20181102160751729.png" | absolute_url }})
+![]({{"/_posts/images/image-20181102160751729.png" | absolute_url }})
 
-![](""{{"https://github.com/whf307/whf307.github.io/blob/master/_posts/images/image-20181102225907753.png" | absolute_url }}")
+![]({{"https://github.com/whf307/whf307.github.io/blob/master/_posts/images/image-20181102225907753.png" | absolute_url }})
 
 这里xmax从0变成了603，就是删除这个tuple的事务id
 
