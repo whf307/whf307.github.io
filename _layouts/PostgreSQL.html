@@ -38,28 +38,18 @@
       -->
 					<!-- Post -->
 					<section class="posts">
-						<!--
-						{% for post in site.posts %}
-						{% assign mod3 = forloop.index | modulo: 3 %}
-							<article>
-								<header>
-									<span class="date">{{ post.date | date_to_string }}</span>
-									<h2><a href="{{ post.url | absolute_url }}">{{ post.title }}</a></h2>
-								</header>
-								<a href="{{ post.url | absolute_url }}" class="image fit"><img src="{{ post.image | absolute_url }}" alt="" /></a>
-								<ul class="actions">
-									<li><a href="{{ post.url | absolute_url }}" class="button">Read More</a></li>
-								</ul>
-							</article>
-							{% if mod3 == 0 %}
-							<article>
-								<header>
-									<h2><a href="#">Sponsored</a></h2>
-								</header>
-
-							</article>
-							{% endif %}
-						{% endfor %}
+						{% for category in site.categories %}
+    						{% if category.first == page.category %}
+     						   {% for post in category.last %}
+					<div class="article">
+    					<div class="well">
+       						 <h1 class="none"><a href="{{ site.baseurl}}{{ post.url }}">{{ post.title }} {{ post.date | date: "（%Y年%m月%d日）" }}</a></h1>
+       						 <div class="content">{{ post.excerpt | strip_html }}</div>
+    					</div>
+					</div>
+        {% endfor %}
+    {% endif %}
+{% endfor %}
 -->
 					
 					</section>
@@ -74,14 +64,8 @@
 			<!-- Scripts -->
 			{% include scripts-main.html %}
 			{% include tracking.html %}
-			<div>
-				<h1>随笔分类</h1>
-					{% for category in site.categories %}
-					<ul>
-   					 <li><a href="{{ site.baseurl}}/category/{{ category.first }}.html">{{category.first}}（{{category.last.size}}）</a></li>
-					</ul>
-					{% endfor %}
-			</div>
+			
+
 
 	</body>
 </html>
