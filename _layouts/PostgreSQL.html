@@ -29,13 +29,6 @@
 
 				<!-- Main -->
 				<div id="main">
-			<!--
-          <article class="post featured">
-            <header class="major">
-              <p>Yes, there were times I'm sure you knew</p>
-            </header>
-          </article>
-      -->
 					<!-- Post -->
 					<section class="posts">
 						{% for category in site.categories %}
@@ -47,10 +40,9 @@
        						 <div class="content">{{ post.excerpt | strip_html }}</div>
     					</div>
 					</div>
-        {% endfor %}
-    {% endif %}
-{% endfor %}
--->
+        					{% endfor %}
+    					{% endif %}
+					{% endfor %}
 					
 					</section>
 
