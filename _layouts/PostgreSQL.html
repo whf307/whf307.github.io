@@ -41,12 +41,14 @@
 						<!--
 						{% for post in site.posts %}
 						-->
+
+						<!--
 						{* for post in site.categories.pg *}
 						{% assign mod3 = forloop.index | modulo: 3 %}
 							<article>
 								<header>
 									<span class="date">{{ post.date | date_to_string }}</span>
-									<h4><a href="{{ post.url | absolute_url }}">{{ post.title }}</a></h4>
+									<h3><a href="{{ post.url | absolute_url }}">{{ post.title }}</a></h3>
 								</header>
 								<a href="{{ post.url | absolute_url }}" class="image fit"><img src="{{ post.image | absolute_url }}" alt="" /></a>
 								<ul class="actions">
@@ -62,13 +64,13 @@
 							</article>
 							{% endif %}
 						{% endfor %}
-					<!-- here
+					-->
 					{* for post in site.categories.pg *}
          			{% assign mod3 = forloop.index | modulo: 3 %}
 						<article>
 							<header>
 								<span class="date">{{ post.date | date_to_string }}</span>
-								<h2><a href="{{ post.url | absolute_url }}">{{ post.title }}</a></h2>
+								<h4><a href="{{ post.url | absolute_url }}">{{ post.title }}</a></h4>
 							</header>
 							<a href="{{ post.url | absolute_url }}" class="image fit"><img src="{{ post.image | absolute_url }}" alt="" /></a>
 							<ul class="actions">
@@ -84,7 +86,6 @@
 							</article>
 							{% endif %}
 					{* endfor *}
--->
 					</section>
 
 					</div>
