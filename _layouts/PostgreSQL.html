@@ -8,17 +8,8 @@
 
 		<!-- Wrapper -->
 			<div id="wrapper" class="fade-in">
+				<header id="header">
 
-				<!-- Header -->
-				<!--
-				<header id="header">
-					<a href="{{ "/" | absolute_url }}" class="logo">{{site.title}}</a>
-				</header>
-                -->
-				<header id="header">
-					<!--
-					<a href="{{ "/" | absolute_url }}" class="logo"></a>
-					-->
 				</header>
 				<!-- Nav -->
 					<nav id="nav">
@@ -30,6 +21,11 @@
 				<!-- Main -->
 				<div id="main">
 					<!-- Post -->
+					{% for category in site.categories %}
+					<ul>
+    				<li><a href="{{ site.baseurl}}/category/{{ category.first }}.html">{{category.first}}（{{category.last.size}}）</a></li>
+					</ul>
+					{% endfor %}
 					<section class="posts">
 						{% for category in site.categories %}
     						{% if category.first == page.category %}
