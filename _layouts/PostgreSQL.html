@@ -61,12 +61,7 @@
 							{% endif %}
 						{% endfor %}
 -->
-					<h1>随笔分类</h1>
-					{% for category in site.categories %}
-					<ul>
-   					 <li><a href="{{ site.baseurl}}/category/{{ category.first }}.html">{{category.first}}（{{category.last.size}}）</a></li>
-					</ul>
-					{% endfor %}
+					
 					</section>
 
 					</div>
@@ -79,6 +74,14 @@
 			<!-- Scripts -->
 			{% include scripts-main.html %}
 			{% include tracking.html %}
+			<div>
+				<h1>随笔分类</h1>
+					{% for category in site.categories %}
+					<ul>
+   					 <li><a href="{{ site.baseurl}}/category/{{ category.first }}.html">{{category.first}}（{{category.last.size}}）</a></li>
+					</ul>
+					{% endfor %}
+			</div>
 
 	</body>
 </html>
