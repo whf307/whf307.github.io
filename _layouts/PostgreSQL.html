@@ -2,7 +2,15 @@
 <html>
 	<head>
     {% include head.html %}
-
+		<style>
+        .layui-side{
+            position:fixed;
+            width:200px;
+            top:0;
+            bottom:0;
+            background-color: #393D49;
+        }
+    </style>
 	</head>
 	<body class="is-loading">
 
@@ -21,11 +29,13 @@
 				<!-- Main -->
 				<div id="main">
 					<!-- Post -->
+					<div class="layui-side layui-bg-black">
 					{% for category in site.categories %}
 					<ul>
     				<li><a href="{{ site.baseurl}}/category/{{ category.first }}.html">{{category.first}}（{{category.last.size}}）</a></li>
 					</ul>
 					{% endfor %}
+					</div>
 					<section class="posts">
 						{% for category in site.categories %}
     						{% if category.first == page.category %}
