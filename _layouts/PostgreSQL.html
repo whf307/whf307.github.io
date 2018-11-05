@@ -2,13 +2,23 @@
 <html>
 	<head>
     {% include head.html %}
+
 	</head>
 	<body class="is-loading">
 
 		<!-- Wrapper -->
 			<div id="wrapper" class="fade-in">
-				<header id="header">
 
+				<!-- Header -->
+				<!--
+				<header id="header">
+					<a href="{{ "/" | absolute_url }}" class="logo">{{site.title}}</a>
+				</header>
+                -->
+				<header id="header">
+					<!--
+					<a href="{{ "/" | absolute_url }}" class="logo"></a>
+					-->
 				</header>
 				<!-- Nav -->
 					<nav id="nav">
@@ -19,24 +29,62 @@
 
 				<!-- Main -->
 				<div id="main">
+			<!--
+          <article class="post featured">
+            <header class="major">
+              <p>Yes, there were times I'm sure you knew</p>
+            </header>
+          </article>
+      -->
 					<!-- Post -->
-					<div class="layui-side layui-bg-black">
-					
-					</div>
 					<section class="posts">
-						{% for category in site.categories %}
-    						{% if category.first == page.category %}
-     						   {% for post in category.last %}
-					<div class="article">
-    					<div class="well">
-       						 <h1 class="none"><a href="{{ site.baseurl}}{{ post.url }}">{{ post.title }} {{ post.date | date: "（%Y年%m月%d日）" }}</a></h1>
-       						 <div class="content">{{ post.excerpt | strip_html }}</div>
-    					</div>
-					</div>
-        					{% endfor %}
-    					{% endif %}
-					{% endfor %}
-					
+						<!--
+						{% for post in site.posts %}
+						-->
+						{* for post in site.categories.pg *}
+						{% assign mod3 = forloop.index | modulo: 3 %}
+							<article>
+								<header>
+									<span class="date">{{ post.date | date_to_string }}</span>
+									<h2><a href="{{ post.url | absolute_url }}">{{ post.title }}</a></h2>
+								</header>
+								<a href="{{ post.url | absolute_url }}" class="image fit"><img src="{{ post.image | absolute_url }}" alt="" /></a>
+								<ul class="actions">
+									<li><a href="{{ post.url | absolute_url }}" class="button">Read More</a></li>
+								</ul>
+							</article>
+							{% if mod3 == 0 %}
+							<article>
+								<header>
+									<h2><a href="#">Sponsored</a></h2>
+								</header>
+
+							</article>
+							{% endif %}
+						{% endfor %}
+					<!-- here
+					{* for post in site.categories.pg *}
+         			{% assign mod3 = forloop.index | modulo: 3 %}
+						<article>
+							<header>
+								<span class="date">{{ post.date | date_to_string }}</span>
+								<h2><a href="{{ post.url | absolute_url }}">{{ post.title }}</a></h2>
+							</header>
+							<a href="{{ post.url | absolute_url }}" class="image fit"><img src="{{ post.image | absolute_url }}" alt="" /></a>
+							<ul class="actions">
+								<li><a href="{{ post.url | absolute_url }}" class="button">Read More</a></li>
+							</ul>
+							</article>
+							{% if mod3 == 0 %}
+							<article>
+								<header>
+									<h2><a href="#">Sponsored</a></h2>
+								</header>
+
+							</article>
+							{% endif %}
+					{* endfor *}
+-->
 					</section>
 
 					</div>
@@ -49,8 +97,6 @@
 			<!-- Scripts -->
 			{% include scripts-main.html %}
 			{% include tracking.html %}
-			
-
 
 	</body>
 </html>
