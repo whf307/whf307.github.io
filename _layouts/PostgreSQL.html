@@ -2,15 +2,6 @@
 <html>
 	<head>
     {% include head.html %}
-		<style>
-        .layui-side{
-            position:fixed;
-            width:200px;
-            top:25;
-            bottom:0;
-            background-color: #393D49;
-        }
-    </style>
 	</head>
 	<body class="is-loading">
 
@@ -35,7 +26,7 @@
 					<section class="posts">
 						{% for category in site.categories %}
     						{% if category.first == page.category %}
-     						   {% for post in category.pg %}
+     						   {% for post in category.last %}
 					<div class="article">
     					<div class="well">
        						 <h1 class="none"><a href="{{ site.baseurl}}{{ post.url }}">{{ post.title }} {{ post.date | date: "（%Y年%m月%d日）" }}</a></h1>
