@@ -1,22 +1,20 @@
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-
-<title>Whf307</title>
-<!--
-	<title>{{ page.title }}</title>
--->
-<meta name="description" content="{{ page.description }}">
-<!--
-<link rel="apple-touch-icon" sizes="180x180" href="{{ "/assets/icon/apple-touch-icon.png" | absolute_url }}">
-<link rel="icon" type="image/png" sizes="32x32" href="{{ "/assets/icon/favicon-32x32.png" | absolute_url }}">
-<link rel="icon" type="image/png" sizes="16x16" href="{{ "/assets/icon/favicon-16x16.png" | absolute_url }}">
-<link rel="manifest" href="{{ "/assets/icon/manifest.json" | absolute_url }}">
-<link rel="mask-icon" href="{{ "/assets/icon/safari-pinned-tab.svg" | absolute_url }}" color="#5bbad5">
-<link rel="shortcut icon" href="{{ "/assets/icon/favicon.ico" | absolute_url }}">
-<meta name="msapplication-config" content="{{ "/assets/icon/browserconfig.xml" | absolute_url }}">
--->
-<meta name="theme-color" content="#ffffff">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <!-- CSS -->
-<link rel="stylesheet" href="{{ "/assets/css/main.css" | absolute_url }}" />
-<noscript><link rel="stylesheet" href="{{ "/assets/css/noscript.css" | absolute_url }}" /></noscript>
+
+  <link rel="stylesheet" href="{{ "/css/main.css" | prepend: site.baseurl }}">
+  <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
+  <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}">
+
+<!-- Google font -->
+
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Noto Sans">
+
+<!-- font awesome -->
+
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+
+</head>

@@ -1,45 +1,39 @@
-<!DOCTYPE HTML>
+---
+layout: null
+---
 
 <html>
-	<head>
-    {% include head.html %}
-	</head>
-	<body class="is-loading">
+  <head>
+      
+  {% include head.html %}
 
-		<!-- Wrapper -->
-			<div id="wrapper" class="fade-in">
+  {% if site.google-analytics %}
+  {% include google-analytics.html %}
+  {% endif %}
 
-				<!-- Header -->
-				<header id="header">
-				</header>
-				<!-- Nav -->
-					<nav id="nav">
+  {% if page.url == "/404.html" %}
+  <meta http-equiv="refresh" content="10; url={{ site.baseurl }}">
+  {% endif %}
 
-            {% include nav.html %}
+  </head>
+  
+  {% include header.html %}
 
-					</nav>
+<header class="post-header">
+	<center><div class="contact-title">{{ page.title }}</div>
+		<div class="contact-subtitle"><p>{{ page.subtitle }}</p></div></center>
+</header>
 
-				<!-- Main -->
-				<div id="main">
+<div class="wrapper">
+	<div class="post-content">
+		{{ content }}
+	</div>
+</div>
 
-					<!-- Post -->
-					<section class="post">
-						<p>{{content}}</p>
-					</section>
+<footer>
 
-					<!-- Footer -->
-						<footer>
-						</footer>
-					</div>
+{% include foot.html %}
+{% include footer.html %}
 
-				<!-- Footer -->
-        {% include foot.html %}
-
-			</div>
-
-			<!-- Scripts -->
-			{% include scripts-main.html %}
-			{% include tracking.html %}
-
-	</body>
+</footer>
 </html>
