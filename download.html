@@ -1,10 +1,10 @@
 ---
 layout: page
-title: Tags
+title: download
 subtitle: Keep Calm and Carry On.
-permalink: /tags/
+permalink: /download/
 ---
-
+<!--
 <section class="post-tags">
     {% assign tags_list = site.tags %}
     
@@ -43,3 +43,17 @@ permalink: /tags/
         {% assign group = nil %}
     </ul>
     {% endfor %}
+-->
+
+
+<header>
+        
+    <h2>bbedp</h2>
+    <p>download
+    <a href="/download/bbedp.zip"  download="bbedp.zip">bbedp</a>
+   </p>
+        <p>Readme</p>
+    </header>
+    <p>    The script is used to print and edit block of PostgreSQL page,and you can use it only on Linux,if you want to use it on other plat from such as  AIX,maybe you could edit it by youself,good luck! </br>
+    Just find the $PGDATA,oid of database and relfilenode into ./file and then u can use it now! for $PGDATA excute 'echo $PGDATA' or 'ps -ef | grep postgres' to find the data directory!!! for oid of database,run 'select oid,datname from pg_database;' for relfilenode ,run 'select relfilenode from pg_class where relname='table_name'; and edit the ./file like '/oracle/soft/pg_data/base/13323/16422' and then ,run chmod 755 bbedp,and execute ./bbedp,the new world is here ! </br>
+    If you have any problem when using it, please concat with me,I will do as more as I can.</p>
