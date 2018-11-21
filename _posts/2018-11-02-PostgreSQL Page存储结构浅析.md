@@ -12,7 +12,7 @@ pg中的page和Oracle中的数据块是一个意思，都是数据库的块，�
 
 ### 2.1 page结构
 
-```c++
+```
 +----------------+---------------------------------+
 | PageHeaderData | linp1 linp2 linp3 ...           |
 +-----------+----+---------------------------------+
@@ -35,7 +35,7 @@ pg中的page和Oracle中的数据块是一个意思，都是数据库的块，�
 
 ### 2.2PageHeaderData数据结构 （页头）
 
-```c++
+```
 typedef struct PageHeaderData
 {
 	/* XXX LSN is member of *any* block, not only page-organized ones */
@@ -71,7 +71,7 @@ pd_checksum是校验和，在initdb的时候通过-k参数指定开启，默认�
 
 pg_flags有以下的值：
 
-```c++
+```
 /*
  * pd_flags contains the following flag bits.  Undefined bits are initialized
  * to zero and may be used in the future.
@@ -106,7 +106,7 @@ prune_xid表示这个page上最早删除或者修改tuple的事务id，用于vac
 
 ### 2.3 linp结构（行指针）
 
-```c++
+```
 /*
  * An item pointer (also called line pointer) on a buffer page
  *
@@ -142,7 +142,7 @@ lp_off是tuple的开始的偏移量；lp_flags是标志位（0表示没有使用
 
 ### 2.4 tuple header结构（行头）
 
-```c++
+```
 typedef struct HeapTupleFields
 {
 	TransactionId t_xmin;		/* inserting xact ID */
@@ -211,7 +211,7 @@ union是共享结构体，起作用的变量是最后一次赋值的成员。来
 
 **t_infomask **是flag标志位，具体值如下：
 
-```c++
+```
 /*
  * information stored in t_infomask:
  */
@@ -255,7 +255,7 @@ t_hoff表示tuple header的长度；t_bits表示null值的数量。
 
 它在源码的crontrib下面
 
-```sql
+```
 postgres@307-> cd postgresql-10.4/contrib/pageinspect
 ```
 
@@ -268,7 +268,7 @@ postgres@307-> make install
 
 create extension就好了
 
-```sql
+```
 postgres@307-> psql
 psql (10.4)
 Type "help" for help.
@@ -296,7 +296,7 @@ postgres=#
 
 ### 3.2 创建建测试表t1，插入数据
 
-```sql
+```
 postgres=# create table t1(id int,name varchar(10));
 CREATE TABLE
 
@@ -354,7 +354,7 @@ heap_page_items 可以看到具体tuple的数据
 
 #### 3.3.1 page_header
 
-```sql
+```
 postgres=# \x
 Expanded display is on.
 postgres=# select * from page_header(get_raw_page('t1',0));
@@ -376,7 +376,7 @@ postgres=#
 
 #### 3.3.2 heap_page_items
 
-```sql
+```
 postgres=# select * from heap_page_items(get_raw_page('t1',0)) limit 1;
 -[ RECORD 1 ]-------------------
 lp          | 1
@@ -399,7 +399,7 @@ postgres=#
 
 我们来看一行记录，可以看到它是第1行记录（lp=1），tuple的开始偏移量8160（lp_off）,tuple的长度是32bytes（lp_len为32，这个tuple是第一个插入的tuple，所以lp_off+lp_len=8160+32=8192），这行记录的插入事务id是557（t_min），和tuple的删除事务id是0（t_max），这里数据没有被删除，所以都是0。我们还可以看到t_ctid是（0，1），这里表示这个tuple是这个事务里第一条命令插入的，t_ctid就是事务内部的命令序号；t_infomask2是2，t_infomask为2306；tuple头部结构（行头）的长度是24（t_hoff），t_data就是16进制存储的真正的数据了。
 
-```sql
+```
 postgres=# \d t1
                         Table "public.t1"
  Column |         Type          | Collation | Nullable | Default 
@@ -412,7 +412,7 @@ postgres=#
 
 ### 3.4 删除一行数据观察prune_xid
 
-```sql
+```
 postgres=# select * from page_header(get_raw_page('t1',0));
 -[ RECORD 1 ]--------
 lsn       | 0/1671188
@@ -444,7 +444,7 @@ postgres=#
 
 我们删除一行tuple可以看到prune_xid有了值，为559，这个559就是删除这个tuple的事务id（当前最早的删除或更改了tuple的事务id）
 
-```sql
+```
 postgres=# select * from heap_page_items(get_raw_page('t1',0)) limit 1;
 -[ RECORD 1 ]-------------------
 lp          | 1
