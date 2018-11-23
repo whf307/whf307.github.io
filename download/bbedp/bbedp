@@ -1,0 +1,481 @@
+#!/usr/bin/python
+
+###################################################################################################################################
+## Author      : whf307
+## Created     : 2018-09-12
+## Mail        : whf307@gmail.com 
+## Website     : https://whf307.github.io
+## Platform    : Linux
+## Python      : 2.7
+## About bbed  : bbed(Block Browser and EDitor) is a tool for Oracle to browser and edit block of oracle datafile
+## About bbedp : The bbedq is a tool just like oracle bbed , for postgresql test only!!! Do not use it on you production  system!!! 
+###################################################################################################################################
+
+## import module needed
+import re
+import os
+import time
+
+## Get current week
+from datetime import datetime, date
+dayOfWeek = datetime.now().weekday()
+a={'0':'Mon','1':'Tues','2':'Wed','3':'Thur','4':'Fra','5':'Sat','6':'Sun'}
+if str(dayOfWeek) in a:
+	week= a[str(dayOfWeek)]
+
+## Get current datetime
+t=time.strftime(' %d %H:%M:%S %Y',time.localtime(time.time()))  # t is  current time with format  %d %H:%M:%S %Y
+
+## Get current month
+d=time.strftime('%m',time.localtime(time.time()))
+b={'01':'Jan','02':'Feb','03':'Mar','04':'Apr','05':'May','06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Oct','11':'Nov','12':'Dec'}
+
+if str(d) in b:
+        mon= " "+b[str(d)] # curremt month
+
+## Get password
+## Also u can change passwd here
+import getpass
+pwd=getpass.getpass('Password: ')
+if pwd == 'a':   # real password
+    print ''
+    print("BBEDP: Release 0.1.0.0.0 - Limited Production on ")+week+mon+t+'\n'
+    print("Copyright (c) 2018, 2018, whf307 and/or its affiliates.  All rights reserved.")+'\n'
+    print("************* !!! For PostgreSQL Internal Test only !!! *************** ")+'\n'
+	
+else:
+    ## U can change these print message ,if u want 
+    #print("BBED-00113: Invalid password. Please rerun utility with the correct password.")
+    #print(" OK!!! YOU ARE LUCKY ENOUGH!!! 	Now u can use it with  incorrect password!!!")
+
+    print ''
+    print("BBEDP: Release 0.1.0.0.0 - Limited Production on ")+week+mon+t+'\n'
+    print("Copyright (c) 2018, 2018, whf307 and/or its affiliates.  All rights reserved.")+'\n'
+    print("************* !!! For PostgreSQL Internal Test only !!! *************** ")+'\n'
+
+## open the ./file for read and write(the postgresql file that u want to read or edit)
+
+## Global var
+linp=[]        # linp storage the linp data
+lp_rel=[]      # lp_rel storage the real linps with lp_off,lp_flags,lp_len
+tuples=[]      # tuples storage the real tuples data
+
+## To get file size first,open file first
+ff1=open('./file','r')
+ff2=ff1.readline()
+ff3=ff2.replace("\n", "")
+ff=open(ff3,'r')
+size = os.path.getsize(ff3)
+global block_total
+block_total=size/8192
+
+## Main function for read write the pg data file,just a function we close the file on eache if,do not close on the function
+def block_r(block_off):            # block_off is the block offset of the file ,default is 0
+       	f1=open('./file','r')      # read the configure file ,like '/oracle/soft/pg_data/13323/16422' in it
+       	f2=f1.readline()
+	global f3
+	f3=f2.replace("\n", "")    # except the char "\n"
+	global f                   # we will use f for f.seek to dump and edit the file
+        f=open(f3,'r+')            # open the reial file  for read and write
+ 	f.seek(block_off*8192,0)
+	global arr                 # arr sotrage the real data with hex
+        arr=[]
+	
+	# Exchange arr to hex ,it storaged as ASCII when we read it
+	i=0
+        while i<8192:
+        	b=f.read(1)
+                if b:
+                       read_h=hex(ord(b)).replace('0x','').zfill(2)
+                       arr.append(read_h)
+                if not b:
+                       break
+		i=i+1
+        #f.close()                 # do not close the file,we will close when we use the function
+
+	## Calcute the pd_lower with offset 13 , 2 bytes
+	## On Linux ,it's big endian,so we exchange the offset in trun
+	global pd_low1
+	global pd_low2
+	pd_low1 = arr[13:14]
+	pd_low2 = arr[12:13]
+
+	global v_pd_low1
+	global v_pd_low2
+	v_pd_low1 = ''.join(pd_low1)    # Exchange list to string with ''.join
+	v_pd_low2 = ''.join(pd_low2)
+
+	global pd_low
+	pd_low = '0x' + v_pd_low1 + v_pd_low2   # Print pd_low with hex
+
+	global pd_lower
+	pd_lower=int(pd_low,16)                 # Exchange  pd_low to DEC from HEX
+
+	global num_tuples
+	num_tuples=(pd_lower-24)/4              # Total num_tuples , page_header is 24 bytes, 4 bytes each linp  
+
+	## Calcute pd_upper offset 15 , 2 bytes
+	pd_uper1 = arr[15:16]
+	pd_uper2 = arr[14:15]
+	
+	v_pd_uper1 = ''.join(pd_uper1)  # Exchange list to string with ''.join
+	v_pd_uper2 = ''.join(pd_uper2)
+	pd_uper = '0x' + v_pd_uper1 + v_pd_uper2  # Print pd_uper with hex
+	global pd_upper
+	pd_upper=int(pd_uper,16)        # Exchange  pd_uper  to DEC  from HEX 
+
+
+	## Calcute pd_special offset 17 , 2 bytes
+	pd_spec1 = arr[17:18]
+	pd_spec2 = arr[16:17]
+
+	v_pd_spec1 = ''.join(pd_spec1)  # Exchange list to string with ''.join
+	v_pd_spec2 = ''.join(pd_spec2)
+
+	global pd_spec
+	pd_spec = '0x' + v_pd_spec1 + v_pd_spec2   # Print pd_spec with hex
+
+	global pd_special
+	pd_special=int(pd_spec,16)      # Exchange  pd_spec to DEC from HEX
+
+	global num_bytes
+	num_bytes=pd_special-pd_upper   # Tuple total bytes
+
+	global special_bytes
+	special_bytes=8192-pd_special   # Bytes of special space
+
+
+	## Process linps 
+	m=0  # offset for each 4 bytes ,so m = m + 4
+	linp[:]=arr[24:pd_lower]        # Linps data with 4 bytes,but 15+2+15 bits for lp_off,lp_flags,lp_len,so split it
+	lp_rel[:]=[]
+	while m < len(linp) - 3:             # Min linp(m) ,the lats 4 bytes,so m < len(lp)-3
+		lp=''.join(linp[m+3])+''.join(linp[m+2])+''.join(linp[m+1])+''.join(linp[m])  # Also big endian  
+		lp_ob=bin(int(lp,16))        # Exchange  lp_ob to BIN from HEX  
+		lp_t=lp_ob.split('0b')[1]    # Expect the char '0b' on header lp_ob
+		lp_total=lp_t.zfill(32)      # All linp data with BIN,bits
+		lp_total2=re.findall('.{1}', lp_total)   # Split linp with each 2 bits,so split to lp_off,lp_flag and lp_len
+		lp_off  = ''.join(lp_total2[0:15])      # !!!!!!!!!!!Lp_len first 15 bits in my test, so ,here is in trun ,but print is ok!!!!!!!!!!!! 
+		lp_flag = ''.join(lp_total2[15:17])      # Lp_flag in the middle 2 bits of lp_total
+                lp_len  = ''.join(lp_total2[17:32])       # !!!!!!!!! Lp_len actually here
+                lp_rel.append(lp_len)                    # So we get linp  lp_rel with lp_off,lp_flag and lp_len in BIN
+		lp_rel.append(lp_flag) 
+                lp_rel.append(lp_off)
+		m=m+4	
+	## Process tuples ,print tuples
+	i = 1   # Use i to process each tuple
+        j = 0   # Use j to process each linp, we get tuple from arr, offset in linp
+	tuples[:]=[]
+        while i <= num_tuples:
+		tuples.append(arr[int(lp_rel[j],2):(int(lp_rel[j],2)+int(lp_rel[j + 2],2))])  # We get real tuples by arr[lp_off:lp_off+lp_len]
+		tuples[:]=tuples[0:(pd_special-pd_upper)]
+                j = j + 3	
+		i = i + 1
+
+## Main program
+## Use many if to match the operation
+if __name__ == '__main__':
+	block_offf=0         # default block_offf is 0
+	count=512            # default count for dump operation
+	arr_off=0            # default offset
+	while True:
+        	s = raw_input('BBEDP> ')   # s is waht we input
+		if re.search("^set\s+block\s+\d+$",s):    # use re to match "set block n" , where n is a number, also is block_offf when we use this command
+                        block_offf=int(re.search("^set\s+block\s+\d+$",s).group(0).split()[2])
+			if block_offf >= block_total:
+				print 'Out range of blocks!!!'  # ensure block_offf less than block_total
+				block_offf=0
+				block_offf=0
+			else:
+                        	block_r(block_offf)             # use main function and close the  file opened
+				f.close()
+                        	print '   BLOCK#          ' + str(block_offf)
+		elif  re.search("^set\s+count\s+\d+$",s):   # the value of count if input
+			count=int(re.search("^set\s+count\s+\d+$",s).group(0).split()[2])
+			print '        COUNT           '+str(count)
+		elif  re.search("^set\s+offset\s+\d+$",s):  # the value of offset if input
+			arr_off=int(re.search("^set\s+offset\s+\d+$",s).group(0).split()[2])
+			print '        OFFSET           '+str(arr_off)
+		elif s == 'help':    # help info
+		 	print 'set block [block_offset]'
+			print 'set count [bytes_to_display]'
+			print 'set offset  [offset_to_dump]'
+			print 'map :map the struct'
+			print 'd   :dump the offset'
+			print 'p   :print offset'
+			print 'p PageHeaderData :to print the page header struct'
+			print 'p Linps :to print the linps'
+			print 'p linp[n] :to print the linp[n]'
+			print 'p Tuples: print all tupels'
+			print 'p tuples [n]:print the tuple n'
+			print 'p Pd_special : print pd_special'
+			print 'm /x aaaa offset bbbb :to modify the offset'
+			print 'exit :exit the program'
+      		elif s == 'map':                      # map the struct of block chosed
+			block_r(block_offf)           # use main function block_r
+			f.close()                     # close file opened
+			print ' File: ' + f3          # the file we opened 
+      	       		print ' Block: ' + str(block_offf) + '                                offset: ' + str(arr_off)   # info of block_off and offset
+           		print ' -------------------------------------------------------------------'
+			print ' struct  PageHeaderData , 24 bytes          @0'    +'\n'
+			print ' struct  '+('Linps , ' + str(pd_lower-24)+ ' bytes').ljust(35) +'@24'    +'\n'            # bytes of linps  is pd_lower - 24
+			print ' struct  '+('Tuples , ' + str(num_bytes)+ ' bytes').ljust(35)+'@' + str(24 + 4*num_tuples)+ '     '+'\n'
+			print ' struct  '+('Pd_special , ' + str(special_bytes) + ' bytes').ljust(35)+'@' + str(pd_special-1)  +'\n'
+			print ' There are ' + str(num_tuples) + ' tuples in the block'
+		elif s == 'p Linps':  # print all linps
+			block_r(block_offf)
+			f.close()
+			i = 0  # i used for get lp_off for each linp
+			j = 1  # j used for each linp
+			while j <= num_tuples:
+				print 'linp ' + str(j) + '    @' + str((j-1)*4+24) + '  0x' + ''.join(linp[i+3])+ ''.join(linp[i+2])+ ''.join(linp[i+1])+ ''.join(linp[i]) 
+				print '-------------------------'
+				lp_not_null = str(int(lp_rel[i],2))
+				if lp_not_null != '0':
+					print 'lp_off   : ' + str(int(lp_rel[i],2))
+					print 'lp_flags : ' + str(int(lp_rel[i+1],2))
+					print 'lp_len   : ' + str(int(lp_rel[i+2],2))
+					print ''
+				else :
+					print 'THE TUPLE IS NULL !!!' 
+					print '' 
+				i=i+3
+				j=j+1
+			print 'There are ' + str(num_tuples) + ' tuples in the block'
+		elif s == 'p Tuples':   #  print all tuples
+			block_r(block_offf)
+			f.close()
+			i_1 = 0      # get lp_off and lp_len from linps
+			j=0      # each tuple
+			while j < num_tuples:
+				tuple_not_null=''.join(linp[i_1+3])+''.join(linp[i_1+2])+''.join(linp[i_1+1])+''.join(linp[i_1])
+				if str(int(lp_rel[i_1+2],2)) != '0':
+					print 'tuple ' + str(j+1)
+                                	print '-----------------------------------------------------'
+                                	print 'lp_off'.ljust(14) + str(int(lp_rel[i_1],2)).ljust(14) + '@' + str((j)*4+24).ljust(14) + '0x' + tuple_not_null
+                                	print 'lp_flags'.ljust(14) + str(int(lp_rel[i_1+1],2)).ljust(14) + '@' + str((j)*4+24).ljust(14) + '0x' + tuple_not_null
+                                	print 'lp_len'.ljust(14) + str(int(lp_rel[i_1+2],2)).ljust(14) + '@' + str((j)*4+24).ljust(14) + '0x' + tuple_not_null
+					c11 = str(int(''.join(tuples[j][3]) + ''.join(tuples[j][2])+''.join(tuples[j][1])+''.join(tuples[j][0]),16))
+					c12 = ''.join(tuples[j][0:4]) 
+					c13 = str(int(''.join(lp_rel[i_1]),2)) 
+					print 't_xmin'.ljust(14) + c11.ljust(14) + '@' + c13.ljust(14) + '0x' + c12 
+                                        c21 = str(int(''.join(tuples[j][7]) + ''.join(tuples[j][6])+''.join(tuples[j][5])+''.join(tuples[j][4]),16))
+                                        c22 = ''.join(tuples[j][4:8])
+                                        c23 = str(int(''.join(lp_rel[i_1]),2)+4) 
+                                	print 't_xmax'.ljust(14) + c21.ljust(14) + '@' + c23.ljust(14) + '0x' + c22 
+                                        c31 = str(int(''.join(tuples[j][11]) + ''.join(tuples[j][10])+''.join(tuples[j][9])+''.join(tuples[j][8]),16))
+                                        c32 = ''.join(tuples[j][8:12])
+                                        c33 = str(int(''.join(lp_rel[i_1]),2)+8) 
+                                	print 't_field3'.ljust(14) + c31.ljust(14) + '@' + c33.ljust(14) + '0x' + c32 
+                                        c41 = str(int(''.join(tuples[j][13]) + ''.join(tuples[j][12])+''.join(tuples[j][15])+''.join(tuples[j][14]),16))
+                                        c42 = ''.join(tuples[j][12:16])
+                                        c43 = str(int(''.join(lp_rel[i_1]),2)+12)  
+                                        c91 = str(int(''.join(tuples[j][17])+''.join(tuples[j][16]),16))
+                                        c92 = ''.join(tuples[j][16:18])
+                                	print 't_ctid'.ljust(14) + ('('+ c41 + ',' + c91  + ')').ljust(14)  + '@' + c43.ljust(14) + '0x' + c42 + c92 
+                                        c51 = str(int(''.join(tuples[j][19])+''.join(tuples[j][18]),16))
+                                        c52 = ''.join(tuples[j][18:20])
+                                        c53 = str(int(''.join(lp_rel[i_1]),2)+18) 
+                                	print 't_infomask2'.ljust(14) + c51.ljust(14) + '@' + c53.ljust(14) + '0x' + c52 
+                                        c61 = str(int(''.join(tuples[j][21])+''.join(tuples[j][20]),16))
+                                        c62 = ''.join(tuples[j][20:22])
+                                        c63 = str(int(''.join(lp_rel[i_1]),2)+20) 
+                                	print 't_infomask'.ljust(14) + c61.ljust(14) + '@' + c63.ljust(14) + '0x' + c62 
+                                        c71 = str(int(''.join(tuples[j][22]),16))
+                                        c72 = ''.join(tuples[j][22])
+                                        c73 = str(int(''.join(lp_rel[i_1]),2)+22) 
+                                	print 't_hoff'.ljust(14) + c71.ljust(14) + '@' + c73.ljust(14) + '0x' + c72 
+                                        c81 = bin(int(''.join(tuples[j][23]),16))
+					c81_1=c81.split('0b')[1]
+                                        c82 = ''.join(tuples[j][23])
+                                        c83 = str(int(''.join(lp_rel[i_1]),2)+23) 
+                                	print 'bits8'.ljust(14) + c81.ljust(14) + '@' + c83.ljust(14)  + '0x' + c82 
+					if len(tuples[j][24:]):
+                                		print 'tupledata'.ljust(28)+'@' + str(int(''.join(lp_rel[i_1]),2)+24).ljust(14) + '0x' + ''.join(tuples[j][24:])
+					else :
+                                		print 'tupledata'.ljust(28)+'@' + str(int(''.join(lp_rel[i_1]),2)+24) 
+					print ''
+				else:
+					print 'tuple ' + str(j+1)
+					print '-----------------------------------------------------'
+					print 'TUPLE ' + str(j+1) + ' IS NULL  !!!!'
+					print ' '
+				j = j + 1
+				i_1 = i_1 + 3
+                elif  re.search("^p\s+linp\s+\d+$",s):   # print the point linps use command 'p linp n'
+			block_r(block_offf)
+			f.close()
+                        linp_n=int(re.search("^p\s+linp\s+\d+$",s).group(0).split()[2])  # get the linp number
+			if linp_n <= num_tuples:
+                        	print 'linp' + str(linp_n) + '    @' + str((linp_n-1)*4+24) + '  0x' + ''.join(linp[(linp_n-1)*3:(linp_n*3)])
+                        	print '-------------------------'
+                        	print 'lp_off   : ' + str(int(lp_rel[(linp_n-1)*3],2)) 
+                        	print 'lp_flags : ' + str(int(lp_rel[(linp_n-1)*3+1],2))
+                        	print 'lp_len   : ' + str(int(lp_rel[(linp_n-1)*3+2],2)) 
+				#linp_n=linp_n+num_tuples
+			else:
+				print 'No such linps!!!'
+		elif  re.search("^p\s+tuple\s+\d+$",s):   # print the tulpe u point
+                        block_r(block_offf)
+			f.close()
+                        tuple_n=int(re.search("^p\s+tuple\s+\d+$",s).group(0).split()[2])-1
+			tuple_null=linp[(tuple_n*3):((tuple_n+1)*3+1)]
+			tuple_not_null_1=tuple_null[::-1]
+			tuple_not_null=''.join(tuple_not_null_1)
+                        if tuple_n < num_tuples and tuple_n != -1:
+                                if str(int(lp_rel[tuple_n*3+2],2)) != '0':
+                                	print 'tuple ' + str(tuple_n+1)
+					print '-----------------------------------------------------'
+                                	print 'lp_off'.ljust(14) + str(int(lp_rel[tuple_n*3],2)).ljust(14)+ '@' + str((tuple_n)*4+24).ljust(14) + '0x' + tuple_not_null
+                                	print 'lp_flags'.ljust(14) + str(int(lp_rel[tuple_n*3+1],2)).ljust(14)+ '@' + str((tuple_n)*4+24).ljust(14) + '0x' + tuple_not_null 
+                                	print 'lp_len'.ljust(14) + str(int(lp_rel[tuple_n*3+2],2)).ljust(14)+ '@' + str((tuple_n)*4+24).ljust(14) + '0x' + tuple_not_null 
+					c1_1=tuples[tuple_n][0:2]
+					c1_2=tuples[tuple_n][2:4]
+					c1=''.join(c1_2[::-1])+''.join(c1_1[::-1])
+                                        c11 = str(int(c1,16))
+                                        c12 = ''.join(tuples[tuple_n][0:4]) 
+                                        c13 = str(int(''.join(lp_rel[tuple_n*3]),2)) 
+                                	print 't_xmin'.ljust(14) + c11.ljust(14) + '@' + c13.ljust(14) + '0x' + c12 
+					c2_1=tuples[tuple_n][4:6]
+                                        c2_2=tuples[tuple_n][6:8]
+                                        c2=''.join(c2_2[::-1])+''.join(c2_1[::-1])
+                                        c21 = str(int(c2,16))
+                                        c22 = ''.join(tuples[tuple_n][4:8])
+                                        c23 = str(int(''.join(lp_rel[tuple_n*3]),2)+4) 
+                                	print 't_xmax'.ljust(14) + c21.ljust(14) + '@' + c23.ljust(14) + '0x' + c22 
+                                        c3_1=tuples[tuple_n][8:10]
+                                        c3_2=tuples[tuple_n][10:12]
+                                        c3=''.join(c3_2[::-1])+''.join(c3_1[::-1])
+                                        c31 = str(int(c3,16))
+                                        c32 = ''.join(tuples[tuple_n][8:12])
+                                        c33 = str(int(''.join(lp_rel[tuple_n*3]),2)+8) 
+                                	print 't_field3'.ljust(14) + c31.ljust(14) + '@' + c33.ljust(14) + '0x' + c32 
+                                        c4_1=tuples[tuple_n][12:14]
+                                        c4_2=tuples[tuple_n][14:16]
+                                        c4=''.join(c4_1[::-1])+''.join(c4_2[::-1])
+                                        c41 = str(int(c4,16))
+                                        c42 = ''.join(tuples[tuple_n][12:16])
+                                        c43 = str(int(''.join(lp_rel[tuple_n*3]),2)+12)  
+                                        c9_1=tuples[tuple_n][16:18]
+                                        c9=''.join(c9_1[::-1])
+                                        c91 = str(int(c9,16))
+                                        c92 = ''.join(tuples[tuple_n][16:18])
+                                	print 't_ctid'.ljust(14) + ('('+ c41 + ',' + c91  + ')').ljust(14)+'@' + c43.ljust(14) + '0x' + c42 + c92 
+                                        c5_1=tuples[tuple_n][18:20]
+                                        c5=''.join(c5_1[::-1])
+                                        c51 = str(int(c5,16))
+                                        c52 = ''.join(tuples[tuple_n][18:20])
+                                        c53 = str(int(''.join(lp_rel[tuple_n*3]),2)+18) 
+                                	print 't_infomask2'.ljust(14) + c51.ljust(14) + '@' + c53.ljust(14) + '0x' + c52 
+                                        c6_1=tuples[tuple_n][20:22]
+                                        c6=''.join(c6_1[::-1])
+                                        c61 = str(int(c6,16))
+                                        c62 = ''.join(tuples[tuple_n][20:22])
+                                        c63 = str(int(''.join(lp_rel[tuple_n*3]),2)+20) 
+                                	print 't_infomask'.ljust(14) + c61.ljust(14) + '@' + c63.ljust(14) + '0x' + c62 
+                                        c71 = str(int(''.join(tuples[tuple_n][22]),16))
+                                        c72 = ''.join(tuples[tuple_n][22])
+                                        c73 = str(int(''.join(lp_rel[tuple_n*3]),2)+22) 
+                                	print 't_hoff'.ljust(14) + c71.ljust(14) + '@' + c73.ljust(14) + '0x' + c72 
+                                        c81 = bin(int(''.join(tuples[tuple_n][23]),16)) 
+                                        c82 = ''.join(tuples[tuple_n][23])
+                                        c83 = str(int(''.join(lp_rel[tuple_n*3]),2)+23) 
+                                	print 'bits8'.ljust(14) + c81.ljust(14) + '@' + c83.ljust(14)  + '0x' + c82 
+                                        print 'tupledata'.ljust(28) + '@' + str(int(''.join(lp_rel[tuple_n*3]),2)+24).ljust(14)  + '0x' + ''.join(tuples[tuple_n][24:])
+                                        print ''
+                                else :
+                                        print 'TUPLE ' + str(tuple_n+1) + ' IS NULL !!!'
+                                	print ''
+				tuple_n=tuple_n+num_tuples
+			else :
+				print 'No such tuple!!!'
+		elif s == 'exit':    # input exit to quit the program
+			break
+		elif s == 'help':    # help command
+			print 'HELP [ <bbedq command> | ALL ]'
+		elif s == '':        # input null ,continue
+			continue 
+		elif s == 'p PageHeaderData':    # print page header struct
+                        block_r(block_offf)
+			f.close()
+                        print 'struct PageHeaderData, 24 bytes                @0'
+                        print ' pd_lsn                                        @0           ' + '0x' + ''.join(arr[0:8])
+                        print ' pd_checksum                                   @8           ' + '0x' + ''.join(arr[8:10])
+                        print ' pd_flags                                      @10          ' + '0x' + ''.join(arr[10:12])
+                        print ' pd_lower                                      @12          ' + '0x' + ''.join(arr[12:14])
+                        print ' pd_upper                                      @14          ' + '0x' + ''.join(arr[14:16])
+                        print ' pd_special                                    @16          ' + '0x' + ''.join(arr[16:18])
+                        print ' pd_pagesize_version                           @18          ' + '0x' + ''.join(arr[18:20])
+                        print ' pd_prune_xid                                  @20          ' + '0x' + ''.join(arr[20:24])
+		elif s == 'p' or re.search("^p\s+\d+$",s):    # print the offset
+			if re.search("^p\s+\d+$",s):
+	                	arr_off=int(re.search("^p\s+\d+$",s).group(0).split()[1])
+			block_r(block_offf)
+			f.close()
+			if arr_off<8: 
+				print 'PageHeaderData.pd_lsn\n------------------------------------------------'
+				print 'pd_lsn                  @0' + '                 0x' +  ''.join(arr[0:8])
+			elif 8<=arr_off<10: 
+				print 'PageHeaderData.pd_checksum\n------------------------------------------------'
+				print 'pd_checksum             @8' + '                 0x' +  ''.join(arr[8:10])
+			elif 10<=arr_off<12: 
+				print 'PageHeaderData.pd_checksum\n------------------------------------------------'
+				print 'pd_flags                @10' + '                 0x' +  ''.join(arr[10:12])
+			elif 12<=arr_off<14: 
+				print 'PageHeaderData.pd_checksum\n------------------------------------------------'
+				print 'pd_lower                @12' + '                 0x' +  ''.join(arr[12:14])
+			elif 14<=arr_off<16: 
+				print 'PageHeaderData.pd_checksum\n------------------------------------------------'
+				print 'pd_upper                @14' + '                 0x' +  ''.join(arr[14:16])
+			elif 16<=arr_off<18: 
+				print 'PageHeaderData.pd_checksum\n------------------------------------------------'
+				print 'pd_special              @16' + '                 0x' +  ''.join(arr[16:18])
+			elif 18<=arr_off<20: 
+				print 'PageHeaderData.pd_checksum\n------------------------------------------------'
+				print 'pd_pagesize_version     @18' + '                 0x' +  ''.join(arr[18:20])
+			elif 20<=arr_off<24: 
+				print 'PageHeaderData.pd_checksum\n------------------------------------------------'
+				print 'pd_prune_xid            @20' + '                 0x' +  ''.join(arr[20:24])
+			elif 24<=arr_off<(24 + 4*num_tuples): 
+				print 'IteamIdDatas\n------------------------------------------------'
+				print 'linp' + str((arr_off-23)/4+1) + '                   @' + str(arr_off) + '                0x' +  ''.join(arr[arr_off/4:arr_off/4+4])
+			elif pd_upper<=arr_off<pd_special: 
+				print 'Tuples\n------------------------------------------------'
+				print 'tupledata              @' + str(arr_off) + '                0x' +  ''.join(arr[arr_off:arr_off+2])
+			else : 
+				print 'BBED-00206: out of range offset ('+s+')' 
+                elif s == 'd' :      # dump the offset 
+			block_r(block_offf)
+			f.close()
+			arr_d=re.findall(r'.{8}', ''.join(arr[arr_off:count+arr_off])) # print each 8 bytes
+			dump=''
+			j=0
+			print ' File: ' + f3
+                        print ' Block: ' + str(block_offf) + '                                Offsets: ' + str(arr_off) + ' to ' + str(arr_off + count - 1)
+                        print ' ----------------------------------------------------------------------'
+         
+			while j<=len(arr_d) + 4:
+				dump=''+' '.join(arr_d[j:j+8])	
+				j=j+8
+				print dump 
+			print "<32 bytes per line>"
+		elif re.search("^m\s+/x\s.*offset\s+\d+",s):    # get input like "m /x 0200 offset 8188"
+			seek_ori=re.search("^m\s+/x\s.*offset\s+\d+",s).group(0).split()[4]    # get offset like 8188
+			seek=int(seek_ori)+block_offf*8192
+        		s2=re.search("^m\s+/x\s.*offset\s+\d+",s).group(0).split()[2]      # get value like 0200
+			block_r(block_offf)
+			b=re.findall(r'.{1}', s2)                                        # big endian, so split to 1 byte 
+			c1=int(('0x'+''.join(b[0])+''.join(b[1])),16)
+			c2=int(('0x'+''.join(b[2])+''.join(b[3])),16)
+			f.seek(int(seek)) 
+        		f.write(chr(c1))                                     # write the change
+			f.seek(int(seek)+1) 
+        		f.write(chr(c2))                                     # write the change
+			f.close()                                                        # close file
+			
+		elif s == 'p Pd_special':
+			print 'struc Pd_special ,' + str(special_bytes) + ' bytes      @' +  str(pd_special-1)
+			#print '  pd_special                   @'  + str(pd_special-1) + '    '   + ''.join(arr[int(pd_spec,16)-2:])
+			print '  pd_special                   @'  + str(pd_special-1) 
+		else:
+			print 'BBEDP-00200: invalid keyword ('+s+')'                     # print invalid command

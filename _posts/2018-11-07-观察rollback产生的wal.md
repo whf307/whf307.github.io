@@ -72,7 +72,7 @@ rollback之后，607这个事务abort了，但是也记录了wal的。
 
 其实这个是某天客户急急忙忙让logminer挖归档看看，说是有表数据被删了，听到这话，立马判定99.99%是应用的人在胡说八道，但为了拿出证据还是挖了一下。首先当然是用闪回查询，看看时间点附近的数据，可惜回滚段太小，已经被覆盖了。那么就挖吧，挖出来一看，根本就没插进去，当时的redo就是上面提到的这样，马上就回滚了，至于为什么回滚了，oracle层面很难看出什么了。但是开发的人说，他们的日志显示程序运行没有报错，而且都是插进去其他的session查到数据了的，觉得很扯，但是他们说用了连接池，又是短连接，难道每次都用的同一个session？我能想到的只有这样了。回滚可能是commit的时候网络出了点问题，或者其他的什么。建议让他们的程序打印更详细的日志，这个事情也就这样了。审计的话，其实也可以考虑一下各种审计类工具，对重点表进行细粒度的审计。
 
-pg的话，听说自带的审计很厉害，改天好好测一下，像oracle这样去读归档也算是一种方法吧，找到当时的归档，然后log_dump去读，再去具体分析。wal的名字和时间可以如下查询到：
+pg的话，像oracle这样去读归档也算是一种方法吧，找到当时的归档，然后log_dump去读，再去具体分析。当前存在的wal的名字和时间可以如下查询到：
 
 ```
 postgres=# select * from pg_ls_waldir() order by modification asc;
@@ -101,3 +101,22 @@ postgres=# select * from pg_ls_waldir() order by modification asc;
 postgres=# 
 ```
 
+当前的归档可以如下查询：
+
+```
+postgres=# select * from pg_stat_archiver;
+-[ RECORD 1 ]------+------------------------------
+archived_count     | 3
+last_archived_wal  | 00000001000000010000003A
+last_archived_time | 2018-11-23 10:11:16.877234+08
+failed_count       | 0
+last_failed_wal    | 
+last_failed_time   | 
+stats_reset        | 2018-11-14 15:07:00.294068+08
+
+postgres=# 
+```
+
+但是好像查不到历史的归档时间和wal名字对应信息？虽然可以ls -rtl 按时间来看，但这样也未必太麻烦了吧。
+
+如果把log_min_duration_statement设置为0日志全记录，那日志文件就太大了，oracle的alert打开ddl日志都太多了，这个设0 ，ddl和dml全都记录了的，得做好清理策略。
