@@ -2,8 +2,6 @@
 category: pg
 ---
 
-# BBED for PostgreSQL
-
 ## 一、关于bbedp
 
 用python模仿bbed写了一个bbed for pg的脚本，简单的查看和修改字节都可以做到，你可以在[这里](https://whf307.github.io/download/)下载到最新的版本，如果你有任何问题可以联系我：whf307@gmail.com。如果你不清楚这个脚本的功能，请不要轻易在生产环境使用它，这很危险。不一定有用，但比较好玩。
