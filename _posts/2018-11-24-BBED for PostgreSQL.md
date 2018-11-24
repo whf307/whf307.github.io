@@ -1,4 +1,8 @@
-category=pg
+---
+
+category: pg
+
+---
 
 # BBED for PostgreSQL
 
