@@ -1,7 +1,5 @@
 ---
-
 category: pg
-
 ---
 
 # BBED for PostgreSQL
