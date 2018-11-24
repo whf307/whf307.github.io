@@ -481,7 +481,7 @@ postgres=# select * from t5;
 (3 rows)
 ```
 
-最后，你可以exit来退出程序
+你可以exit来退出程序
 
 
 
