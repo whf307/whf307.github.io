@@ -66,7 +66,7 @@ vi file
 这里你需要给x权限运行就可以了，为了效果就不要密码了。
 
 ```
-postgres@cs-db-> ./bbedp
+postgres@whf307-> ./bbedp
 Password: 
 
 BBEDP: Release 0.1.0.0.0 - Limited Production on Sat Nov 24 16:50:30 2018
