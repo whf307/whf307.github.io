@@ -15,6 +15,7 @@
 import re
 import os
 import time
+import sys
 
 ## Get current week
 from datetime import datetime, date
@@ -68,6 +69,9 @@ ff=open(ff3,'r')
 size = os.path.getsize(ff3)
 global block_total
 block_total=size/8192
+if block_total == 0:
+	print 'The page is NULL!!!'
+	sys.exit()
 
 ## Main function for read write the pg data file,just a function we close the file on eache if,do not close on the function
 def block_r(block_off):            # block_off is the block offset of the file ,default is 0
@@ -178,6 +182,7 @@ if __name__ == '__main__':
 	block_offf=0         # default block_offf is 0
 	count=512            # default count for dump operation
 	arr_off=0            # default offset
+	#while block_total != 0:
 	while True:
         	s = raw_input('BBEDP> ')   # s is waht we input
 		if re.search("^set\s+block\s+\d+$",s):    # use re to match "set block n" , where n is a number, also is block_offf when we use this command
