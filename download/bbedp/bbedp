@@ -65,7 +65,11 @@ tuples=[]      # tuples storage the real tuples data
 ff1=open('./file','r')
 ff2=ff1.readline()
 ff3=ff2.replace("\n", "")
-ff=open(ff3,'r')
+if os.path.exists(ff3):
+	ff=open(ff3,'r')
+else:
+	print 'The page "' + str(ff3)+ ' " dose not exists!'
+        sys.exit()
 size = os.path.getsize(ff3)
 global block_total
 block_total=size/8192
@@ -194,13 +198,13 @@ if __name__ == '__main__':
 			else:
                         	block_r(block_offf)             # use main function and close the  file opened
 				f.close()
-                        	print '   BLOCK#          ' + str(block_offf)
+                        	print '   BLOCK         ' + str(block_offf)
 		elif  re.search("^set\s+count\s+\d+$",s):   # the value of count if input
 			count=int(re.search("^set\s+count\s+\d+$",s).group(0).split()[2])
-			print '        COUNT           '+str(count)
+			print '   COUNT         '+str(count)
 		elif  re.search("^set\s+offset\s+\d+$",s):  # the value of offset if input
 			arr_off=int(re.search("^set\s+offset\s+\d+$",s).group(0).split()[2])
-			print '        OFFSET           '+str(arr_off)
+			print '   OFFSET        '+str(arr_off)
 		elif s == 'help':    # help info
 		 	print 'set block [block_offset]'
 			print 'set count [bytes_to_display]'
