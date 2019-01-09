@@ -6,7 +6,7 @@
 ## Website            : https://whf307.github.io
 ## Platform           : Linux
 ## Python             : 2.7
-## How to use         : chmod +x passwd.py   &  ./passwd.py 
+## How to use         : chmod +x passwd.py   &&  ./passwd.py 
 ## About the scripts  : To generate a strong password with 2 digital , 2 capital letters ,2 small letters and 2 special character
 ###################################################################################################################################
 
