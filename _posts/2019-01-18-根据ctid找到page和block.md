@@ -4,7 +4,7 @@ category: pg
 
 根据ctid来计算具体的page，因为超过1G的page会被切割。
 
-ll这个表有4G多
+### ll这个表有4G多
 
 ```sql
 li=# \d+
@@ -18,7 +18,7 @@ li=# \d+
 (4 rows)
 ```
 
-找一下最大的ctid
+### 找一下最大的ctid
 
 ```sql
 li=# select max(ctid) from ll;
@@ -30,7 +30,7 @@ li=# select max(ctid) from ll;
 li=# 
 ```
 
-建一个函数来计算
+### 建一个函数来计算
 
 ```sql
 create or replace function get_file_block(tab text,c1 int) returns varchar
@@ -50,17 +50,17 @@ li=# select get_file_block('ll',604933);
 (1 row)
 ```
 
-简单说明下：
+### 简单说明下：
 
 1、输入表名和blockid，表属于public的话owner可以省略
 
 2、比如这里是 604933这个block，一个block是8K来计算。1G=1024*1024K，那么(604933\*8)/(1024\*1024)的结果就是第几个1G的文件了
 
-3、取余的话就是这个文件中所在的偏移量了，单位是k，我们再除以8192就是块的个数了，所以就是(604933\*8192::bigint)%(1024\*1024\*1024)/8192
+3、取余的话就是这个文件中所在的偏移量了，单位是k，我们再除以8192就是块的个数了，所以就是(604933\*8192::bigint)%(1024\*1024\*1024)/8192。这里就是80645这块了
 
 4、page物理位置用pg_relation_filepath查看得到
 
-那么真正的物理文件就是
+### 那么真正的物理文件就是
 
 ```sql
 li=# show data_directory;
@@ -75,7 +75,7 @@ li=#
 /oracle/soft/data/base/16384/21150.4
 ```
 
-用bbedp查看验证
+### 用bbedp查看验证
 
 ```shell
 [root@whf307 soft]# ./bbedp 
@@ -115,7 +115,7 @@ No such tuple!!!
 BBEDP> 
 ```
 
-pageinspect验证
+### pageinspect验证
 
 ```
 
