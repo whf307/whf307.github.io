@@ -1,5 +1,5 @@
 ---
-category:pg
+category: pg
 ---
 
 根据ctid来计算具体的page，因为超过1G的page会被切割。
