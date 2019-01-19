@@ -147,3 +147,6 @@ li=# select * from heap_page_items(get_raw_page('ll',604933));
 li=# 
 ```
 
+### 参考资料：
+
+https://mp.weixin.qq.com/s/LFPta3nGD12MRFVyuYEvHA
