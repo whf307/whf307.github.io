@@ -41,7 +41,7 @@ pwd=getpass.getpass('Password: ')
 if pwd == 'a':   # real password
     print ''
     print("BBEDP: Release 0.1.0.0.0 - Limited Production on ")+week+mon+t+'\n'
-    print("Copyright (c) 2018, 2018, whf307 and/or its affiliates.  All rights reserved.")+'\n'
+    print("Copyright (c) 2018, 2019, whf307 and/or its affiliates.  All rights reserved.")+'\n'
     print("************* !!! For PostgreSQL Internal Test only !!! *************** ")+'\n'
 	
 else:
@@ -51,7 +51,7 @@ else:
 
     print ''
     print("BBEDP: Release 0.1.0.0.0 - Limited Production on ")+week+mon+t+'\n'
-    print("Copyright (c) 2018, 2018, whf307 and/or its affiliates.  All rights reserved.")+'\n'
+    print("Copyright (c) 2018, 2019, whf307 and/or its affiliates.  All rights reserved.")+'\n'
     print("************* !!! For PostgreSQL Internal Test only !!! *************** ")+'\n'
 
 ## open the ./file for read and write(the postgresql file that u want to read or edit)
