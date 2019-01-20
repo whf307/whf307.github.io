@@ -149,4 +149,5 @@ li=#
 
 ### 参考资料：
 
-https://mp.weixin.qq.com/s/LFPta3nGD12MRFVyuYEvHA
+[PostgreSQL数据页面损坏修复]: https://mp.weixin.qq.com/s/LFPta3nGD12MRFVyuYEvHA
+
