@@ -149,5 +149,5 @@ li=#
 
 ### 参考资料：
 
-[PostgreSQL数据页面损坏修复]: (https://mp.weixin.qq.com/s/LFPta3nGD12MRFVyuYEvHA)
+<https://mp.weixin.qq.com/s/LFPta3nGD12MRFVyuYEvHA>
 
