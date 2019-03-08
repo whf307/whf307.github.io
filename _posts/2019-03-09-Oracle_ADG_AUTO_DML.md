@@ -161,8 +161,9 @@ ORA-16397: statement redirection from Oracle Active Data Guard standby database 
 
 ------------------
 
---Life is fantastic
-
 --whf307
 
 --20190308
+
+--Life is fantastic
+
