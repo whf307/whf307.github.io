@@ -293,9 +293,6 @@ orcl=# select schemaname,sequencename,sequenceowner from pg_sequences where sche
  sc         | seqtest      | scott
 (1 row)
 
-orcl=# select  from pg_indexes where schemaname='sc';
---
-(1 row)
 
 orcl=# select  * from pg_indexes where schemaname='sc';
  schemaname | tablename | indexname | tablespace |                         indexdef                          
