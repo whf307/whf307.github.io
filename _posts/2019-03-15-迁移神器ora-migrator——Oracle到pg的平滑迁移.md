@@ -4,6 +4,12 @@ category: pg
 
 Oracle到pg的迁移可以用ora2pg，oracle_fdw到工具。今天看到德哥提到的ora-migrator结合oracle_fdw的迁移方式非常简单，顺便测试一下。
 
+Ora-migrator的github主页在这里 https://github.com/cybertec-postgresql/ora_migrator
+
+这个extension可以将一个或多个schema下的序列，普通表和他们的约束、索引一起迁移过去。触发器，存过和package得自己迁移。
+
+我自己测试视图迁移会报错，物化视图也不会迁移过去。
+
 ## 一、准备阶段
 
 ### 1.1 安装Oracle client
@@ -41,16 +47,12 @@ export PGDATABASE=li
 export PGPORT=5555
 export PS1="< \u@\H \w \A --> "
 
-export ORACLE_BASE=/oracle/app/oracle
-export ORACLE_HOME=/oracle/app/oracle/product/11.2/dbhome_1
+export ORACLE_BASE=/usr/lib/oracle
+export ORACLE_HOME=/usr/lib/oracle/11.2/client64
 export ORACLE_SID=wade
 export PATH=$ORACLE_HOME/bin:$ORACLE_HOME/OPatch:$PATH:$ORACLE_HOME/rdbms/lib
 export TNS_ADMIN=$ORACLE_HOME/network/admin
-export TEMP=/tmp
-export TMP=/tmp
-export LANG=en_US
-export NLS_OS_CHARSET=ZHS16GBK
-export NLS_LANG=AMERICAN_AMERICA.ZHS16GBK
+export LD_LIBRARY_PATH=$ORACLE_HOME/lib:$PGHOME/lib:/lib64:/usr/lib64:/usr/local/lib64:/lib:/usr/lib:/usr/local/lib:/usr/include:$ORACLE_HOME/lib:$ORACLE_HOME/lib32:$LD_LIBRARY_PATH
 ```
 
 测试连接
@@ -73,7 +75,7 @@ SQL>
 
 ### 1.3 安装oracle_fdw
 
-下载解压后， make，make install就好了
+fdw(foreign data wrappers)是pg的外部数据接口， pg中有各种fdw来实现pg和其他数据库的连接。oracle_fdw是pg的一个扩展，有点像dblink，外部表。下载解压后， make，make install就好了
 
 ```sql
 < pg@whf307 /oracle/soft/pg 09:11 --> unzip oracle_fdw-ORACLE_FDW_2_1_0.zip  
@@ -85,7 +87,7 @@ SQL>
 
 ### 1.4 安装ora-migrator
 
-同样下载，解压，make  install
+Ora-migrator是github上一个pg迁移工具，结合oracle_fdw来迁移很方便。同样下载，解压，make  install
 
 ```shell
 < pg@whf307 /oracle/soft/pg 09:11 --> unzip ora_migrator-master.zip
@@ -100,6 +102,10 @@ SQL>
 < pg@whf307 /oracle/soft/pg11.2/lib 09:05 --> cd /oracle/soft/pg11.2/lib
 < pg@whf307 /oracle/soft/pg11.2/lib 09:05 --> cp /usr/lib/oracle/11.2/client64/lib/libclntsh.so.11.1 .
 < pg@whf307 /oracle/soft/pg11.2/lib 09:05 --> cp /usr/lib/oracle/11.2/client64/lib/libnnz11.so .
+
+如果不拷贝会报包缺失
+mydb=# create extension oracle_fdw;
+ERROR:  could not load library "/oracle/soft/pg_11/lib/postgresql/oracle_fdw.so": libclntsh.so.11.1: cannot open shared object file: No such file or directory
 ```
 
 ### 1.6 新建数据库和extension
@@ -134,6 +140,8 @@ orcl=#
 
 ### 1.7 pg数据库新建用户
 
+这里oracle和pg我都使用了超级用户，ora-migrator的说明中oracle用户只要有select any dictionary的权限就可以了。
+
 ```sql
 orcl=# create user scott  password 'oracle' superuser;
 CREATE ROLE
@@ -150,6 +158,8 @@ Grant succeeded.
 ```
 
 ### 1.9 创建外部服务
+
+这里相当于建一个连接
 
 ```sql
 orcl=# \des
@@ -169,6 +179,8 @@ orcl=# \des
 ```
 
 ### 1.10 创建用户映射
+
+比较oracle这里像dblink用两步来创建
 
 ```sql
 orcl=#\c orcl scott
@@ -264,7 +276,7 @@ NOTICE:  Migration completed with 1 errors.
 orcl=# 
 ```
 
-可以看到输出很详细。这个视图不知道为什么报错。多个schema的逗号分开。
+可以看到输出很详细，有报错也会输出到前台。
 
 ### 2.4  验证数据
 
@@ -307,7 +319,9 @@ orcl=#
 
 
 
-#### 可以看到用ora-migrator+oracle_fdw很方便地将schema用户下的对象迁移到了pg中。具体生产环境可以多多测试，真的是非常方便。
+#### 可以看到用ora-migrator+oracle_fdw很方便地将schema用户下的sequence，table和index迁移到了pg中。具体环境可以多多测试，真的是很方便了。
+
+
 
 
 
