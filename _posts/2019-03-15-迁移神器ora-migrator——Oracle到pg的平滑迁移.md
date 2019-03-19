@@ -75,7 +75,7 @@ SQL>
 
 ### 1.3 安装oracle_fdw
 
-fdw(foreign data wrappers)是pg的外部数据接口， pg中有各种fdw来实现pg和其他数据库的连接。oracle_fdw是pg的一个扩展，有点像dblink，外部表。下载解压后， make，make install就好了
+fdw(foreign data wrappers)是pg的外部数据接口， pg中有各种fdw来实现pg和pg或者pg和其他数据库的连接。oracle_fdw是pg的一个扩展，有点像dblink，外部表。下载解压后， make，make install就好了
 
 ```sql
 < pg@whf307 /oracle/soft/pg 09:11 --> unzip oracle_fdw-ORACLE_FDW_2_1_0.zip  
@@ -281,7 +281,15 @@ orcl=#
 ### 2.4  验证数据
 
 ```sql
-rcl=# select * from pg_tables where schemaname='sc';
+orcl=# select count(*) from sc.t1;
+ count 
+-------
+ 16063
+(1 row)
+
+orcl=# 
+
+orcl=# select * from pg_tables where schemaname='sc';
  schemaname | tablename | tableowner | tablespace | hasindexes | hasrules | hastriggers | rowsecurity 
 ------------+-----------+------------+------------+------------+----------+-------------+-------------
  sc         | demo      | scott      |            | t          | f        | f           | f
