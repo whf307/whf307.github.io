@@ -4,7 +4,7 @@ category: pg
 
 Oracle到pg的迁移可以用ora2pg，oracle_fdw到工具。今天看到德哥提到的ora-migrator结合oracle_fdw的迁移方式非常简单，顺便测试一下。
 
-Ora-migrator的github主页在这里 https://github.com/cybertec-postgresql/ora_migrator
+Ora-migrator的github主页在这里 <https://github.com/cybertec-postgresql/ora_migrator>
 
 这个extension可以将一个或多个schema下的序列，普通表和他们的约束、索引一起迁移过去。触发器，存过和package得自己迁移。
 
@@ -335,12 +335,12 @@ orcl=#
 
 「插件下载」
 
-https://github.com/laurenz/oracle_fdw/releases
+<https://github.com/laurenz/oracle_fdw/releases>
 
-https://github.com/cybertec-postgresql/ora_migrator
+<https://github.com/cybertec-postgresql/ora_migrator>
 
 
 
 「参考文章」
 
-https://github.com/digoal/blog/blob/master/201903/20190311_01.md?from=timeline&isappinstalled=0
+<https://github.com/digoal/blog/blob/master/201903/20190311_01.md?from=timeline&isappinstalled=0>
