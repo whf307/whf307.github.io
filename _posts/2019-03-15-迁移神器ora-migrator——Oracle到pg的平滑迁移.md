@@ -8,8 +8,6 @@ Ora-migrator的github主页在这里 <https://github.com/cybertec-postgresql/ora
 
 这个extension可以将一个或多个schema下的序列，普通表和他们的约束、索引一起迁移过去。临时表、触发器、物化视图、视图、存储过程和function得自己迁移。
 
-我自己测试视图迁移会报错，物化视图也不会迁移过去。
-
 ## 一、准备阶段
 
 ### 1.1 安装Oracle client
