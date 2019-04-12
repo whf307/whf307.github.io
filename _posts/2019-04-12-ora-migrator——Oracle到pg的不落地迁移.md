@@ -2,7 +2,7 @@
 category: pg
 ---
 
-Oracle到pg的迁移可以用ora2pg，oracle_fdw到工具。之前看到德哥提到的ora-migrator结合oracle_fdw的迁移方式非常简单，最近有空了来测试一下。
+Oracle到pg的迁移可以用ora2pg，oracle_fdw等工具。之前看到德哥提到的ora-migrator结合oracle_fdw的迁移方式非常简单，最近有空了来测试一下。
 
 Ora-migrator的github主页在这里 <https://github.com/cybertec-postgresql/ora_migrator>
 
@@ -100,9 +100,13 @@ Ora-migrator是github上一个pg迁移工具，结合oracle_fdw来迁移很方�
 < pg@whf307 /oracle/soft/pg11.2/lib 09:05 --> cd /oracle/soft/pg11.2/lib
 < pg@whf307 /oracle/soft/pg11.2/lib 09:05 --> cp /usr/lib/oracle/11.2/client64/lib/libclntsh.so.11.1 .
 < pg@whf307 /oracle/soft/pg11.2/lib 09:05 --> cp /usr/lib/oracle/11.2/client64/lib/libnnz11.so .
+```
 
 如果不拷贝会报包缺失
+
+```sql
 mydb=# create extension oracle_fdw;
+
 ERROR:  could not load library "/oracle/soft/pg_11/lib/postgresql/oracle_fdw.so": libclntsh.so.11.1: cannot open shared object file: No such file or directory
 ```
 
@@ -434,7 +438,7 @@ SQL>
 ERROR:  cannot create temporary relation in non-temporary schema
 ```
 
-3、11.2 不推荐使用global的临时表了
+3、不推荐使用global的临时表了
 
 ```
 WARNING:  GLOBAL is deprecated in temporary table creation
@@ -467,7 +471,7 @@ CREATE TABLE
 orcl=# 
 ```
 
-触发器也通过获取ddl去创建
+触发器也通过获取ddl去创建.
 
 
 
@@ -531,11 +535,11 @@ pg的存储过程和oracle的写法还是有一点区别，这里需要去修改
 
 ### 四、ora2pg和ora-migrator比较
 
-|              |                            Ora2pg                            |          Ora-migrator           |
-| ------------ | :----------------------------------------------------------: | :-----------------------------: |
-| 数据是否落地 |                              是                              |               否                |
-| 导出对象     | TABLE, VIEW, GRANT, SEQUENCE, TRIGGER, PACKAGE, FUNCTION, PROCEDURE, PARTITION, TYPE, INSERT, COPY, TABLESPACE, SHOW_REPORT, SHOW_VERSION, SHOW_SCHEMA, SHOW_TABLE, SHOW_COLUMN, SHOW_ENCODING, FDW, MVIEW, QUERY, KETTLE, DBLINK, SYNONYM, DIRECTORY, LOAD, TEST | Table,index,sequence,constraint |
-| 依赖程序     |            perl 5.10,DBI,oracle client,DBD-oracle            |    Oracle_fdw,oracle client     |
+|          |                            Ora2pg                            |          Ora-migrator           |
+| -------- | :----------------------------------------------------------: | :-----------------------------: |
+| 是否落地 |                              是                              |               否                |
+| 导出对象 | TABLE, VIEW, SEQUENCE, TRIGGER, PACKAGE, FUNCTION, PROCEDURE, MVIEW... | Table,index,sequence,constraint |
+| 依赖程序 |            perl 5.10,DBI,oracle client,DBD-oracle            |    Oracle_fdw,oracle client     |
 
 ora-migrator的优点是数据可以不落地，但是能迁移的对象比较少。而且一旦网络出现问题需要重新迁移，比较适合数据量小，除了表，索引和序列之外的对象比较少的情况。
 
