@@ -473,6 +473,8 @@ orcl=#
 
 #### 3.2 其他对象
 
+##### 3.2.1 oracle导出sql文件
+
 其他对象可以用expdp+impdp sqlfile导出ddl到sqlfile指定的文件，修改加工之后再去pg里面创建
 
 ```shell
@@ -523,6 +525,24 @@ Job "SYS"."SYS_SQL_FILE_FULL_01" successfully completed at Fri Apr 12 01:50:21 2
 
 pg的存储过程和oracle的写法还是有一点区别，这里需要去修改的，具体不在赘述，修改都pg的语法去创建就好了。
 
+##### 3.2.2 用ora2pg去导出这些对象，再迁移
+
+
+
+### 四、ora2pg和ora-migrator比较
+
+|              |                            Ora2pg                            |          Ora-migrator           |
+| ------------ | :----------------------------------------------------------: | :-----------------------------: |
+| 数据是否落地 |                              是                              |               否                |
+| 导出对象     | TABLE, VIEW, GRANT, SEQUENCE, TRIGGER, PACKAGE, FUNCTION, PROCEDURE, PARTITION, TYPE, INSERT, COPY, TABLESPACE, SHOW_REPORT, SHOW_VERSION, SHOW_SCHEMA, SHOW_TABLE, SHOW_COLUMN, SHOW_ENCODING, FDW, MVIEW, QUERY, KETTLE, DBLINK, SYNONYM, DIRECTORY, LOAD, TEST | Table,index,sequence,constraint |
+| 依赖程序     |            perl 5.10,DBI,oracle client,DBD-oracle            |    Oracle_fdw,oracle client     |
+
+ora-migrator的优点是数据可以不落地，但是能迁移的对象比较少。而且一旦网络出现问题需要重新迁移，比较适合数据量小，除了表，索引和序列之外的对象比较少的情况。
+
+
+
+相比较ora2pg可以处理更多的对象类型，但是需要落地到sql文件，需要额外安装的程序也多一些。
+
 
 
 附：
@@ -557,6 +577,8 @@ GROUP BY nspname,rolname,
          relkind
 ORDER BY 5,2;
 ```
+
+
 
 「插件下载」
 
