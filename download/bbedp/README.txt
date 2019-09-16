@@ -1,4 +1,4 @@
-This script is used to print and edit block offset of PostgreSQL pages,in python 2.7 .And you can use it only on Linux,if you want to use it on other platfrom like AIX ,maybe you could edit it again youself,good luck!
+This script is used to print and edit block offset of PostgreSQL pages,written in python 2.7 .And you can use it only on Linux,if you want to use it on other platfrom like AIX ,maybe you could edit it again youself,good luck!
 
 Just find the $PGDATA,oid of database and relfilenode into ./file and then u can use it now! 
 For $PGDATA  excute "echo $PGDATA" or "ps -ef | grep postgres" to find the data directory!!! 

@@ -192,7 +192,7 @@ xcnt:0
 sof:0
 sxcnt:0
 rec:0
-[pg12@enmodb2 pg_snapshots]$ 
+[pg12@whf307 pg_snapshots]$ 
 ```
 
 
@@ -202,14 +202,14 @@ rec:0
 | vxid  | virtualxid，虚拟事务id |
 | pid   | 查询快照的会话pid      |
 | dbid  | pg_database.oid        |
-| iso   |                        |
-| ro    |                        |
+| iso   | 事务隔离级别           |
+| ro    | 事务只读               |
 | xmin  |                        |
 | xmax  |                        |
-| xcnt  |                        |
+| xcnt  | 最大事务id？           |
 | sof   |                        |
-| sxcnt |                        |
-| rec   |                        |
+| sxcnt | 子scnt                 |
+| rec   | 是否在recovery         |
 
 如果之前的 pg_export_snapshot的事务结束，这里的文件也会消失。
 
