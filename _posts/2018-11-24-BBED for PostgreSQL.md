@@ -21,28 +21,16 @@ category: pg
 你可以通过$PGDATA环境变量找到数据文件的目录。
 
 ```
-postgres@whf307-> echo $PGDATA
-/oracle/soft/pg_data/
-postgres@whf307-> 
+postgres=# show data_directory;
+ data_directory 
+----------------
+/oracle/soft/pg_data
+(1 row)
+
+postgres=# 
 ```
 
-如果没有配置环境变量，当然可以通过进程找到
-
-```
-postgres@whf307-> ps -ef | grep postgres
-postgres 32739     1  0 Nov13 ?        00:00:07 /oracle/soft/pgsql9.6/bin/postgres
-postgres 32747 32739  0 Nov13 ?        00:00:02 postgres: checkpointer process   
-postgres 32748 32739  0 Nov13 ?        00:00:06 postgres: writer process   
-postgres 32749 32739  0 Nov13 ?        00:00:12 postgres: wal writer process   
-postgres 32750 32739  0 Nov13 ?        00:00:05 postgres: autovacuum launcher process  
-postgres 32751 32739  0 Nov13 ?        00:00:00 postgres: archiver process   last was 000000010000000600000067
-postgres 32752 32739  0 Nov13 ?        00:00:12 postgres: stats collector process  
-postgres@whf307-> lsof -p 32739| grep cwd
-postgres 32739 postgres  cwd    DIR              253,7      4096 147604224 /oracle/soft/pg_data
-postgres@whf307-> 
-```
-
-再比如t1表的page
+比如t1表的page
 
 ```
 postgres=# select pg_relation_filepath('t1');
