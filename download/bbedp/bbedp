@@ -8,7 +8,7 @@
 ## Platform    : Linux
 ## Python      : 2.7
 ## About bbed  : bbed(Block Browser and EDitor) is a tool for Oracle to browser and edit block of oracle datafile
-## About bbedp : The bbedq is a tool just like oracle bbed , for postgresql test only!!! Do not use it on you production  system!!! 
+## About bbedp : The bbedp is a tool just like oracle bbed , for PostgreSQL test only!!! Do not use it on you production  system!!! 
 ###################################################################################################################################
 
 ## import module needed
